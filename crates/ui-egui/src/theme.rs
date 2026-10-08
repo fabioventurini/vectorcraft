@@ -12,16 +12,21 @@ pub enum Brightness {
     MediumDark,
     MediumLight,
     Light,
+    /// Low-stimulation theme: warm neutrals, one accent, no competing hues. Built for sustained
+    /// use by neurodivergent people - see `docs/calm-theme.md`.
+    Calm,
 }
 
 impl Brightness {
-    pub const ALL: [Brightness; 4] = [Brightness::Dark, Brightness::MediumDark, Brightness::MediumLight, Brightness::Light];
+    pub const ALL: [Brightness; 5] =
+        [Brightness::Dark, Brightness::MediumDark, Brightness::MediumLight, Brightness::Light, Brightness::Calm];
     pub fn label(self) -> &'static str {
         match self {
             Brightness::Dark => "Dark",
             Brightness::MediumDark => "Medium Dark",
             Brightness::MediumLight => "Medium Light",
             Brightness::Light => "Light",
+            Brightness::Calm => "Calm (Low Stimulation)",
         }
     }
     pub fn id(self) -> &'static str {
@@ -30,6 +35,7 @@ impl Brightness {
             Brightness::MediumDark => "mediumDark",
             Brightness::MediumLight => "mediumLight",
             Brightness::Light => "light",
+            Brightness::Calm => "calm",
         }
     }
     pub fn parse(s: &str) -> Option<Self> {
@@ -136,6 +142,48 @@ impl Tokens {
         };
         match b {
             Brightness::Dark => base,
+            // Warm-neutral, single-accent, low-stimulation. Surfaces and text are the INT Digital
+            // design system's dark tokens; the greys carry a faint warm bias so nothing reads as
+            // glare. Only the accent is decorative - error and warning keep a hue because they
+            // are the two cues that must never be missed, and both are paired with an icon or
+            // label elsewhere, never colour alone. The guides lose their neon.
+            Brightness::Calm => Tokens {
+                app_bar: hex(0x242422),
+                panel: hex(0x242422),
+                panel_darker: hex(0x1a1a19),
+                tab_strip: hex(0x1a1a19),
+                input: hex(0x2c2c2a),
+                input_border: hex(0x3a3a36),
+                border: hex(0x1a1a19),
+                divider: hex(0x3a3a36),
+                text: hex(0xf2f1ea),
+                text_dim: hex(0xb3b1a6),
+                text_disabled: hex(0x7a786f),
+                icon: hex(0xc9c7bc),
+                hover: hex(0x32322f),
+                tool_active: hex(0x3a3a36),
+                accent: hex(0x85b7eb),
+                accent_strong: hex(0x5f9bd8),
+                row_selected: hex(0x3a3a36),
+                pasteboard: hex(0x1a1a19),
+                ruler: hex(0x2c2c2a),
+                ruler_tick: hex(0x9a988f),
+                smart_guide: hex(0xb48ad0),
+                guide: hex(0x6fb2c4),
+                button: hex(0x2c2c2a),
+                text_strong: hex(0xf8f7f1),
+                button_border: hex(0x4a4a45),
+                selection: hex(0x85b7eb),
+                anchor_selected: hex(0x85b7eb),
+                flyout_active: hex(0x9fc8f0),
+                radius: 6,
+                caption_close: hex(0xc24a3c),
+                highlight: hex(0xd9735e),
+                bleed: hex(0xd9735e),
+                error: hex(0xd9735e),
+                warning: hex(0xe0a94a),
+                ..base
+            },
             // Measured from Illustrator 2026 (plan/illustrator/10-observed-ui.md §1).
             Brightness::MediumDark => Tokens {
                 app_bar: hex(0x535353),
